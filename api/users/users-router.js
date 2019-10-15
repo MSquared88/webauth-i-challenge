@@ -31,6 +31,28 @@ router.post('/register', (req,res) => {
 
 })
 
+router.post('/login', (req, res) => {
+    const { username, password } = req.body
+
+    usersModel.getBy({ username })
+    .then(user => {
+      if (user && bcrypt.compareSync(password, user.password)) {
+        req.session.username = user.username
+
+        console.log('session', req.session)
+        res.status(200).json({
+          message: `Welcome ${user.username}!`,
+        });
+      } else {
+        res.status(401).json({ message: 'Invalid Credentials' });
+      }
+    })
+    .catch(error => {
+      res.status(500).json(error);
+    });
+
+})
+
 router.get('/users', restricted, (req, res) => {
     usersModel.get()
     .then(users => {
@@ -39,6 +61,20 @@ router.get('/users', restricted, (req, res) => {
     .catch(err => {
         res.status(500).json({meessage: 'could not get users', err})
     })
+})
+
+router.get('/logout', (req, res) => {
+    if (req.session) {
+      req.session.destroy(err => {
+        res
+          .status(200)
+          .json({ 
+            message: 'successfully logged out',
+          });
+      });
+    } else {
+      res.status(200).json({ message: 'already logged out' });
+    }
 })
 
 module.exports = router
