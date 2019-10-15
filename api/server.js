@@ -3,9 +3,12 @@ const helmet = require('helmet')
 const sessions = require('express-session')
 const knexSessionsStore = require('connect-session-knex')(sessions)
 const knexConfig = require('../database/db-config')
+const { restricted } = require('./auth/auth-middleware')
 
 //routes
 const userRouter = require('./users/users-router')
+const restrictedRoute = require('./auth/restricted-route')
+
 
 const server = express()
 
@@ -29,9 +32,10 @@ server.use(sessions({
     })
 
 }))
-
 server.use('/api', userRouter)
 
+server.use(restricted)
+server.use('/api/restricted', restrictedRoute)
 
 
 module.exports = server

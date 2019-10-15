@@ -2,7 +2,7 @@ const express = require('express')
 const bcrypt = require('bcryptjs')
 
 const usersModel = require('../users/users-model')
-const {restricted} = require('../helpers/auth-middleware')
+const {restricted} = require('../auth/auth-middleware')
 
 
 const router = express.Router()

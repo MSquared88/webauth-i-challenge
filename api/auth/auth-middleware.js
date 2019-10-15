@@ -11,7 +11,7 @@ function restricted(req, res, next) {
         next()
     }
     else{
-        res.status(500).json({message: 'You shall not pass!!'})
+        res.status(401).json({message: 'You shall not pass!!'})
     }
 }
 
